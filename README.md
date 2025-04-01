@@ -26,4 +26,12 @@ This project provides a backend service allowing clients to perform CRUD (Create
 
 * Node.js 
 * npm 
-* Docker & Docker Compose 
+* Docker & Docker Compose
+
+  Steps to run the project
+* Clone the Repository (or set up files)
+* Install Dependencies
+* Set Up Environment Variables
+* Apply Database Migrations
+* Generate Prisma Client
+* Start the Development Server
