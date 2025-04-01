@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Book {
+  id            String    @id @default(cuid()) // Using CUID for unique IDs
+  title         String
+  isbn          String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Many-to-many relationship with Author
+  authors       Author[]  @relation("BookAuthors")
+
+  // One-to-many relationship for borrowing (a book is borrowed by one user at most)
+  borrowedById  String?   // Foreign key to User ID (nullable)
+  borrowedBy    User?     @relation(fields: [borrowedById], references: [id])
+
+  @@index([borrowedById])
+}
+
+model Author {
+  id            String    @id @default(cuid())
+  name          String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Many-to-many relationship with Book
+  books         Book[]    @relation("BookAuthors")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // One-to-many relationship for borrowing (a user can borrow many books)
+  borrowedBooks Book[]
+}

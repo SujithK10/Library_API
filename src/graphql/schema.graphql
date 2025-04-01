@@ -1,0 +1,80 @@
+# Base Types
+type Book {
+  id: ID!
+  title: String!
+  isbn: String
+  createdAt: String! # Use String for ISO date representation
+  updatedAt: String!
+  authors: [Author!]!
+  isBorrowed: Boolean! # Derived field
+  borrowedBy: User # Null if not borrowed
+}
+
+type Author {
+  id: ID!
+  name: String!
+  createdAt: String!
+  updatedAt: String!
+  books: [Book!]!
+}
+
+type User {
+  id: ID!
+  name: String!
+  createdAt: String!
+  updatedAt: String!
+  borrowedBooks: [Book!]!
+}
+
+# Input types for mutations
+input AddBookInput {
+  title: String!
+  isbn: String
+  authorIds: [ID!]! # IDs of EXISTING authors
+}
+
+input UpdateBookInput {
+  title: String
+  isbn: String
+  authorIds: [ID!] # Optional: Allows changing/setting authors
+}
+
+input AddAuthorInput {
+  name: String!
+}
+
+input UpdateAuthorInput {
+  name: String
+}
+
+input AddUserInput {
+    name: String!
+}
+
+# Queries (Fetching Data)
+type Query {
+  listBooks(authorId: ID, borrowedStatus: Boolean): [Book!]!
+  book(id: ID!): Book
+
+  listAuthors: [Author!]!
+  author(id: ID!): Author
+
+  listUsers: [User!]!
+  user(id: ID!): User
+}
+
+# Mutations (Changing Data)
+type Mutation {
+  addBook(input: AddBookInput!): Book!
+  updateBook(id: ID!, input: UpdateBookInput!): Book
+  deleteBook(id: ID!): Boolean # Return true/false for success indicator
+
+  addAuthor(input: AddAuthorInput!): Author!
+  updateAuthor(id: ID!, input: UpdateAuthorInput!): Author
+  deleteAuthor(id: ID!): Boolean
+
+  addUser(input: AddUserInput!): User!
+
+  borrowBook(bookId: ID!, userId: ID!): Book
+  returnBook(bookId: ID!): Book
+}
